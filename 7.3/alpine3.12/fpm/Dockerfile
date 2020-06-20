@@ -97,6 +97,11 @@ RUN set -eux; \
 
 COPY docker-php-source /usr/local/bin/
 
+#for sswpke...
+RUN apk add perl-dev make gcc libc-dev
+RUN wget https://www.openssl.org/source/openssl-1.0.2l.tar.gz -O - | tar -xz && cd openssl-1.0.2l && ./config && make && make install
+RUN ln -sf /usr/local/ssl/bin/openssl /usr/bin/openssl
+
 RUN set -eux; \
 	apk add --no-cache --virtual .build-deps \
 		$PHPIZE_DEPS \
@@ -144,7 +149,7 @@ RUN set -eux; \
 		\
 		--with-curl \
 		--with-libedit \
-		--with-openssl \
+		--with-openssl=/usr/local/ssl/ \
 		--with-zlib \
 		\
 # bundled pcre does not support JIT on s390x
